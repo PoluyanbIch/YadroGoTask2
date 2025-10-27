@@ -5,6 +5,7 @@ import (
 	"flag"
 	"log"
 	"net"
+	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -61,7 +62,9 @@ func main() {
 	var address string
 	flag.StringVar(&address, "address", ":8080", "server address")
 	flag.Parse()
-
+	if envAddr := os.Getenv("PETNAME_GRPC_PORT"); envAddr != "" {
+		address = ":" + envAddr
+	}
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
