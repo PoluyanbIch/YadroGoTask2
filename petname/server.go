@@ -49,7 +49,7 @@ func (s *server) GenerateMany(req *petnamepb.PetnameStreamRequest, stream grpc.S
 		return status.Error(codes.InvalidArgument, "names must be greater than 0")
 	}
 
-	for i := int64(0); i != namesCount; i++ {
+	for range namesCount {
 		name := petname.Generate(int(words), separator)
 		if err := stream.Send(&petnamepb.PetnameResponse{Name: name}); err != nil {
 			return status.Error(codes.Unavailable, err.Error())

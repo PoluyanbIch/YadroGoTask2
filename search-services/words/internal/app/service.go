@@ -3,6 +3,7 @@ package app
 import (
 	"log/slog"
 	"regexp"
+	"slices"
 	"strings"
 
 	"github.com/kljensen/snowball"
@@ -17,14 +18,11 @@ func NewNormalizer(stopwords map[string]struct{}) *Normalizer {
 }
 
 func (n *Normalizer) deleteStopWords(words []string) []string {
-	result := make([]string, 0, len(words))
-	for _, w := range words {
-		w = strings.ToLower(strings.TrimSpace(w))
-		if _, banned := n.stopwords[w]; !banned {
-			result = append(result, w)
-		}
-	}
-	return result
+	words = slices.DeleteFunc(words, func(w string) bool {
+		_, banned := n.stopwords[strings.ToLower(strings.TrimSpace(w))]
+		return banned
+	})
+	return words
 }
 
 func norm(words []string) []string {
